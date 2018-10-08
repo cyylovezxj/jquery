@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="iconFont/iconfont.css">
+	<script src="jquery-2.1.4/jquery.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="Highcharts-4.0.1/js/highcharts.js"></script>
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+<script>
+	$(function(){
+		// alert();	
+		// var o = {
+		// 	name:"嘿嘿",
+		// 	comment:"这是小和尚",
+		// 	no:1001
+		// }
+		// $.post("http://120.78.164.247:8099/manager/category/saveOrUpdateCategory",o,function(results){
+		// 	console.log(results);
+		// });
+		// $.get("http://120.78.164.247:8099/manager/category/findAllCategory",function(results){
+		// 	console.log(results);
+		// });
+		// $(".you").height($(window).height());
+		// $(".zuo").height($(window).height());
+			
+		// 给左侧侧边栏绑定页面
+		$(".nav li").click(function(){
+			var text = $(this).children().text();
+			if(text == "首页"){
+				$(".content").load('子页面/shouye.html');
+			}else if(text == "栏目管理"){
+				$(".content").load('子页面/lanmu.html');
+			}else if(text == "资讯管理"){
+				$(".content").load('子页面/zixun.html');
+			}else if(text == "用户管理"){
+				$(".content").load('子页面/yonghu.html');
+			}
+		});
+		//设置默认点击首页事件
+		$(".nav li:first").trigger('click');
+	});
+</script>
+	<style>
+		*{
+			margin:0;
+			padding:0;
+		}
+		.box{
+			height:720px;
+			width:1000px;
+			margin:0 auto;
+		}
+		.zuo,.you{
+			float:left;
+		}
+		.logo{
+			width:100%;
+			height:38px;
+			background-color: #3d556d;
+			/*text-align: center;*/
+			line-height:38px;
+			color:#fff;
+			margin-bottom:50px;
+		}
+		.logo img{
+			width:30px;
+			height:33px;
+			margin-left:20px;
+			margin-right:20px;
+		}
+		.zuo{
+			width:200px;
+			height:720px;
+			background-color: #282830;
+		}
+		.nav li a{
+			color:#fff;
+			position:active;
+		}
+		.nav li a:hover{
+			background-color: #ccc;
+		}
+		.nav li a i:first-child{
+			margin-left:5px;
+			margin-right:10px;
+		}
+		.nav li a i:last-child{
+			position:absolute;
+			right:10px;
+		}
+		.you{
+			width:800px;
+			height:700px;
+		}
+		.youtop{
+			height:38px;
+			width:800px;
+			line-height:38px;
+			position:relative;
+		}
+		.youtop i{
+			margin:0 15px;
+		}
+
+		.youtop i sup{
+			background-color: red;
+			/*display:inline-block;*/
+			width:10px;
+			height:10px;
+			border-radius:50%;
+			color:#fff;
+		}
+		.youtop img{
+			width:30px;
+			height:30px;
+			border-radius:50%;
+		}
+		.youtop div{
+			position:absolute;
+			right:50px;
+			height:38px;
+			line-height:38px;
+			display:inline-block;
+		}
+		.content{
+			background-color: #eee;
+			border-top:1px solid #fff;
+			height:662px;
+		}
+		.shouyetop{
+		width:750px;
+		height:270px;
+		margin:0 auto;
+		padding:15px 0;
+		}
+		.shouyetop div{
+			float:left;
+		}
+		.shouyetop>.top1,.shouyetop>.top3{
+			width:175px;
+			height:240px;
+		}
+		.shouyetop .top2{
+			width:330px;
+			height:240px;
+			margin:0 30px;
+			background-color: red;
+		}
+		.top1 div{
+			width:175px;
+			height:70px;
+			background-color: red;
+		}
+		.top1 div:nth-child(2){
+			margin:15px 0;
+		}
+		.top3 div{
+			width:175px;
+			height:110px;
+			background-color: red;
+		}
+		.top3 div:first-child{
+			margin-bottom:20px;
+		}
+		.shouyebottom{
+			height:412px;
+			width:100%;
+		}
+		.shouyebottom>div{
+			height:392px;
+			width:358px;
+			float:left;
+		}
+		.shouyebottom>div:first-child{
+			background-color: red;
+		}
+		.shouyebottom div:first-child{
+			margin:0 25px;
+		}
+		.shouyebottom .bottom2 div{
+			width:358px;
+		}
+		.shouyebottom .bottom2 div:first-child{
+			height:222px;
+			margin-bottom:22px;
+			margin-left:0;
+			background-color: red;
+		}
+		.shouyebottom .bottom2 div:last-child{
+			height:148px;
+			/*margin-bottom:22px;*/
+			margin-left:0;
+			background-color: red;
+		}
+		/*第二个选项卡的样式*/
+		.hidden{
+			display:none;
+		}
+		#lanmu table{
+			border-collapse:collapse;
+			/*background-color: #fff;*/
+			margin:20px 10px;
+			/*table-layout:fixed;*/	
+		}
+		#lanmu table td{
+			width:100px;
+			height:30px;
+			border:1px solid #ededed;
+			text-align:center;
+			line-height:30px;
+			color:#666;
+		}
+
+		#lanmu table tr td:nth-child(4){
+			width:350px;
+		}
+		#lanmu{
+			background-color: #eee;
+		}
+		#lanmu>div{
+			margin:20px 15px;
+			background-color: #fff;
+			border-radius:5px;
+		}
+		.lanmuzeng,.lanmushan{
+			padding:0;
+			margin:0;
+			width:70px;
+			height:25px;
+			text-align:center;
+			line-height:25px;
+			font-size:15px;
+			color:#fff;
+			background-color: #68b828;
+			margin-left:10px;
+		}
+		.lanmushan{
+			background-color: #d9534f;
+		}
+		.lanmuzeng:hover{
+			color:#fff;
+		}
+		.lanmushan:hover{
+			color:#fff;
+		}
+		#lanmu .modal-body div{
+			margin:10px 0;
+		}
+		.modal-body input{
+			width:300px;
+			height:35px;
+			border-radius:5px;
+			outline:none;
+			border:1px solid black;
+		}
+		#lanmu .modal-body select{
+			width:100px;
+			height:25px;
+			margin-left:25px;
+		}
+		/*第三个选项卡样式*/
+		#yonghu>div{
+			margin:10px;
+			background-color: #fff;
+			border-radius:5px;
+		}
+		#yonghu>div>button{
+			margin:10px;
+		}
+		#yonghu .modal-content{
+			width:500px;
+		}
+		#yonghu .modal-body input{
+			width:250px;
+			height:31px;
+			margin:5px 10px;
+		}
+		#yonghu .yonghunei>div>table{
+			margin-left:10px;
+			margin-bottom:10px;
+			float:left;
+			/*padding-top:3px;*/
+		}
+		#yonghu .yonghunei tr td:first-child{
+			width:60px;
+			height:30px;
+			font-size: 12px;
+		}
+		#yonghu .yonghunei tr td{
+			text-align:center;
+			font-size: 12px;
+		}
+		/*资讯页面样式*/
+		#zixun>div{
+			margin:10px;
+			border-radius:5px;
+			background-color: #fff;
+		}
+		#zixun>div>button{
+			margin-top:10px;
+			margin-left:10px;
+		}
+		#zixunbiao{
+			background-color: #fff;
+			margin-left:10px;
+			margin-top:10px;
+		}
+		#zixunbiao td{
+			border:1px solid #ededed;
+			text-align:center;
+			height:30px;
+			width:100px;
+			color:#666;
+		}
+		#zixunzeng modal-body>input{
+			height:30px;
+			margin:10px 0;
+			padding-left:10px;
+		}
+	/*		#lanmu table td{
+			width:100px;
+			height:30px;
+			border:1px solid #ededed;
+			text-align:center;
+			line-height:30px;
+			color:#666;
+		}*/
+	</style>
+</head>
+<body>
+	<div class="box">
+	<!-- 左侧导航栏 -->
+		<div class="zuo">
+			<div class="logo"><img src="images/logo.png" alt="">看点资讯</div>
+			<ul class="nav">
+				<li><a href="javascript:void(0)"><i class="iconfont icon-shouye"></i>首页<i class="iconfont icon-kuozhan"></i></a></li>
+				<li><a href="javascript:void(0)"><i class="iconfont icon-liebiao"></i>栏目管理<i class="iconfont icon-kuozhan"></i></a></li>
+				<li><a href="javascript:void(0)"><i class="iconfont icon-zixun"></i>资讯管理<i class="iconfont icon-kuozhan"></i></a></li>
+				<li><a href="javascript:void(0)"><i class="iconfont icon-ai-user"></i>用户管理<i class="iconfont icon-kuozhan"></i></a></li>
+			</ul>
+		</div>
+		<!-- 右边 -->
+		<div class="you">
+			<div class="youtop">
+				<i class="iconfont icon-liebiao1"></i>
+				<i class="iconfont icon-laba"><sup>4</sup></i>
+				<div>
+					<img src="images/touxiang.png" alt="">乔可爱<i class="iconfont icon-kuozhan"></i>
+				</div>
+			</div>
+			<div class="content">
+			</div>
+		</div>
+	</div>
+</body>
+</html>

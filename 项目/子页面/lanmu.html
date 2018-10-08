@@ -1,0 +1,205 @@
+<div id="lanmu">
+	<div>
+		<button class="btn lanmuzeng" data-toggle="modal" data-target="#lanmuzeng">新增</button>
+		<button class="btn lanmushan">批量删除</button>
+		<!-- 添加栏目的模态框 -->
+		<div class="modal" id="lanmuzeng">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">新增栏目</div>
+					<div class="modal-body">
+						<div>
+							栏目名称<input type="text" required="true" id="biaotou">
+						</div>
+						<div>
+							父栏目<select id="biaoti">
+							<option value="无">--请选择--</option>
+						</div>
+						<div>
+							相关描述<input type="text" required="true" id="biaowei">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-info zengtrue">确定</button>
+						<button class="btn btn-danger zengfalse">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="overflow-y:scroll;height:600px">
+			<table id="lanmubiao">
+				<tr>
+					<td>编号</td>
+					<td>栏目名称</td>
+					<td>父栏目</td>
+					<td>描述</td>
+					<td>操作</td>
+				</tr>
+				<tr class="hidden">
+					<td class="bianji"><input type="checkbox"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="caozuo">
+						<a href="#lanmugai" data-toggle="modal" class="xiugai"><img src="images/修改.png" alt="" style="width:20px;height:20px"></a>
+						<a href="javascript:void(0)" class="shanchu"><img src="images/删除.png" alt="" style="width:20px;height:20px"></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="modal" id="lanmugai">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">修改栏目信息</div>
+					<div class="modal-body">
+						<div>
+							栏目名称<input type="text" id="biaotou1">
+						</div>
+						<div>
+							父栏目<select id="biaoti1">
+								<option value="无">--请选择--</option>
+							</select>
+						</div>
+						<div>
+							相关描述<input type="text" id="biaowei1">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-info xiugaitrue">确定</button>
+						<button class="btn btn-danger xiugaifalse">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$.get("http://120.78.164.247:8099/manager/category/findAllCategory",function(results){
+		console.log(results);
+		var arr = results.data;
+		console.log(arr);
+		var len = arr.length;
+		for(var i = 0;i < len;i ++){
+			var newOption = "<option value='"+arr[i].id+"''>"+arr[i].name+"</option>";
+			$("#biaoti").append(newOption);
+			$("#biaoti1").append(newOption);
+			// jquery写法
+			var tr = $(".hidden").clone(true);
+			tr.removeAttr("class");
+			$(tr.children()[0]).children().val(arr[i].id);
+			$(tr.children()[1]).text(arr[i].name);
+			if(arr[i].parent){
+				$(tr.children()[2]).text(arr[i].parent.name);
+			}else{
+				$(tr.children()[2]).text("无");
+			}
+			$(tr.children()[3]).text(arr[i].comment);
+			$("tbody").append(tr);
+		}
+		//单个删除
+		$(".shanchu").click(function(){
+			var result = confirm("确认删除吗？");
+			if(result){
+				var id = $(this).parent().parent().children(":first").children().val();
+				var o = {
+					id:Number(id)
+				}
+				$.get("http://120.78.164.247:8099/manager/category/deleteCategoryById",o,function(results){
+					if(results.status == 200){
+						$(".content").load('子页面/lanmu.html');
+					}else{
+						alert("删除失败");
+					}
+				});
+			}
+		});
+		// 批量删除
+		$(".lanmushan").click(function(){
+			var arr1 = [];
+			$("input:checked").each(function(index,item){
+				arr1.push($(item).val());
+			});
+			if(arr1.length){
+				var o = {
+					ids:arr1.toString()
+				}
+				$.post("http://120.78.164.247:8099/manager/category/batchDeleteCategory",o,function(results){
+					if(results.status == 200){
+						$(".content").load('子页面/lanmu.html');
+					}else{
+						alert("删除失败！");
+					}
+
+				});
+			}else{
+				alert("请先选择需要删除的行");
+			}
+		});
+		// 增加栏目信息
+		$(".zengtrue").click(function(){
+			var arr2 = [$("#biaotou").val(),$("#biaoti").val(),$("#biaowei").val()];
+			var o = {
+				name:arr2[0],
+				parentId:arr2[1],
+				comment:arr2[2]
+			}
+			$.post("http://120.78.164.247:8099/manager/category/saveOrUpdateCategory",o,function(results){
+					console.log(results);
+				});
+			$("#lanmuzeng").modal("hide");
+			$(".content").load('子页面/lanmu.html');
+		});
+
+		// 取消增加
+		$(".zengfalse").click(function(){
+			$("#lanmuzeng").modal("hide");
+		});
+		// 修改栏目信息
+		$(".xiugai").click(function(){
+			// 获取当前行的所有td
+			var result = $(this).parent().parent().children();
+			// 获取隐藏id
+			var hiddenId = $(result[0]).children().val();
+			// 获取栏目名称
+			$("#biaotou1").val($(result[1]).text());
+			var parent = $(result[2]).text();
+			if(parent == "无"){
+				$("#biaoti1").val("无");
+			}else{
+				var id = arr.filter(function(item){
+					return item.name == parent;
+				})[0].id;
+				$("#biaoti1").val(id);
+			}
+			$("#biaowei1").val($(result[3]).text());
+			console.log(arr);
+			// 修改提交按钮事件
+			$(".xiugaitrue").click(function(){
+				// 栏目框及内容框全部有内容时
+				if($("#biaotou1").val() && $("#biaowei1").val()){
+					var o = {
+						id:Number(hiddenId),
+						name:$("#biaotou1").val(),
+						parentId:$("#biaoti1").val(),
+						comment:$("#biaowei1").val()
+					}
+					$.post("http://120.78.164.247:8099/manager/category/saveOrUpdateCategory",o,function(results){
+						console.log(results);
+						if(results.status == 200){
+							$("#lanmugai").modal("hide");
+							$(".content").load('子页面/lanmu.html');
+						}else{
+							alert("修改失败");
+						}
+					});
+				}else{
+					alert("请完善之后再提交");
+				}
+			});
+			// 修改取消按钮事件
+			$(".xiugaifalse").click(function(){
+				$("#lanmugai").modal("hide");
+			});
+		});
+	});
+</script>

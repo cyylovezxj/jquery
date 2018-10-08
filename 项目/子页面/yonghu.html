@@ -1,0 +1,215 @@
+<div id="yonghu">
+	<div style="overflow-y:scroll;height:600px;">
+		<button class="btn btn-info yonghuzeng" data-toggle="modal" data-target="#yonghuzeng">新增</button>
+		<div class="modal" id="yonghuzeng">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">添加用户信息</div>
+					<div class="modal-body yonghubiao">
+						<table class="yongzeng">
+							<tr>
+								<td>用户名</td>
+								<td><input type="text"></td>
+							</tr>
+							<tr>
+								<td>密码</td>
+								<td><input type="password"></td>
+							</tr>
+							<tr>
+								<td>确认密码</td>
+								<td><input type="password"></td>
+							</tr>
+							<tr>
+								<td>真实姓名</td>
+								<td><input type="text"></td>
+							</tr>
+							<tr>
+								<td>邮箱</td>
+								<td><input type="text"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-info yonghutrue">确定</button>
+						<button class="btn btn-danger yonghufalse">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 模态框结束 -->
+		<!-- 内容区开始 -->
+		<div class="yonghunei">
+			<div class="biaomu">
+				<table style="width:235px;height:230px;border:1px solid #ccc;" class="hidden">
+					<tr>
+						<td colspan="2">
+							<img src="" alt="" style="width:80px;height:80px;border-radius:50%">
+						</td>
+					</tr>
+					<tr>
+						<td>用户名</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>真实姓名</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>email</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>状态</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>操作</td>
+						<td>
+							<a href="#yonghuxiu" data-toggle="modal" class="yonghugai"><img src="images/修改.png" alt="" style="width:20px;height:20px"></a>
+							<a href="javascript:void(0)" class="shanchu"><img src="images/删除.png" alt="" style="width:20px;height:20px"></a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal" id="yonghuxiu">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">修改用户信息</div>
+					<div class="modal-body yonghubiao">
+						<table class="yonghuxiu">
+							<tr>
+								<td>用户名</td>
+								<td><input type="text" class="ming"></td>
+							</tr>
+							<tr>
+								<td>密码</td>
+								<td><input type="password" class="mi"></td>
+							</tr>
+							<tr>
+								<td>真实姓名</td>
+								<td><input type="text" class="xing"></td>
+							</tr>
+							<tr>
+								<td>邮箱</td>
+								<td><input type="text" class="xiang"></td>
+							</tr>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-info yonghugaitrue">确定</button>
+						<button class="btn btn-danger yonghufalse">取消</button>
+					</div>
+				</div>
+			</div>
+		</div>
+<script>
+	$.get("http://120.78.164.247:8099/manager/user/findAllUser",function(results){
+		var arr = results.data;
+		console.log(arr);
+		var len = arr.length;
+		for(var i = 0;i < len;i ++){
+			var table = $(".hidden").clone(true);
+			table.removeAttr("class");
+			if(arr[i].userface){
+				$(table.children()[0]).children(":first").children().children().attr("src",arr[i].userface);
+			}else{
+				$(table.children()[0]).children(":first").children().children().attr("src","http://b-ssl.duitang.com/uploads/item/201410/18/20141018235144_ucf23.jpeg");
+			}
+			// 隐藏一个id
+			$(table.children().children()[0]).children().children().val(arr[i].id);
+			$(table.children().children()[1]).children(":last").text(arr[i].username);
+			// 隐藏一个密码
+			$(table.children().children()[1]).children(":last").val(arr[i].password);
+			$(table.children().children()[2]).children(":last").text(arr[i].nickname);
+			$(table.children().children()[3]).children(":last").text(arr[i].email);
+			$(".biaomu").append(table);
+		}
+		// 单个删除
+		$(".shanchu").click(function(){
+			var result = confirm("确认删除吗？");
+			if(result){
+				var id = $(table.children()[0]).children(":first").children().children().val();
+				var o = {
+					id:Number(id)
+				}
+				$.get("http://120.78.164.247:8099/manager/user/deleteUserById",o,function(results){
+						if(results.status == 200){
+							$(".content").load('子页面/yonghu.html');
+						}else{
+							alert("删除失败");
+						}
+					});
+			}
+		});
+		// 新增用户
+		$(".yonghutrue").click(function(){
+			var result = $(".yongzeng input");
+			var username = $(result[0]).val();
+			var password = $(result[1]).val();
+			var password1 = $(result[2]).val();
+			var nickname = $(result[3]).val();
+			var email = $(result[4]).val();
+			if(password == password1){
+				var o = {
+					username:username,
+					password:password,
+					nickname:nickname,
+					email:email
+				}
+				$.post("http://120.78.164.247:8099/manager/user/saveOrUpdateUser",o,function(results){
+					console.log(results);
+				});
+				$("#yonghuzeng").modal("hide");
+				$(".content").load('子页面/yonghu.html');
+			}else{
+				alert("请确认你的密码");
+			}
+		});
+		// 取消增加
+		$(".yonghufalse").click(function(){
+			$("#yonghuzeng").modal("hide");
+		});
+		// 修改用户信息
+		$(".yonghugai").click(function(){
+			var trs = $(this).parent().parent().parent().children();
+			// 获取用户名
+			$(".ming").val($(trs[1]).children(":last").text());
+			// 获取密码
+			$(".mi").val($(trs[1]).children(":last").val());
+			// 获取真实姓名
+			$(".xing").val($(trs[2]).children(":last").text());
+			// 获取邮箱
+			$(".xiang").val($(trs[3]).children(":last").text());
+			$(".yonghugaitrue").click(function(){
+				var id = $(trs[0]).children().children().val();
+				var result = $(".yonghuxiu input");
+				var username = $(result[0]).val();
+				var password = $(result[1]).val();
+				// var password = $(".mi").val();
+				// var username = $(".ming").val();
+				var nickname = $(result[2]).val();
+				// var nickname = $(".xing").val();
+				// var email = $(".xiang").val();
+				var email = $(result[3]).val();
+				var o = {
+					id:Number(id),
+					username:username,
+					password:password,
+					nickname:nickname,
+					email:email
+				}
+				$.post("http://120.78.164.247:8099/manager/user/saveOrUpdateUser",o,function(results){
+					console.log(results);
+				});
+				$("#yonghuxiu").modal("hide");
+				$(".content").load('子页面/yonghu.html');
+			});
+			$(".yonghufalse").click(function(){
+				$("#yonghuxiu").modal("hide");
+			});
+		});
+	});
+</script>
